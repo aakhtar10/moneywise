@@ -22,12 +22,13 @@ import {
   ChevronRightIcon,
 } from '@chakra-ui/icons';
 import { Link as ScrollLink } from 'react-scroll'; // Import ScrollLink from react-scroll
+import { Link } from 'react-router-dom';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Box>
+    <Box position={"sticky"} zIndex={1} top={0}>
       <Flex
         bg={useColorModeValue('white', 'gray.800')}
         color={useColorModeValue('gray.600', 'white')}
@@ -74,10 +75,12 @@ export default function WithSubnavigation() {
           direction={'row'}
           spacing={6}
         >
-          <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}>
+         <Link to={'/login'}>
+         <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}>
             Sign In
-          </Button>
-          <Button
+          </Button></Link>
+        <Link to={'/signup'}>
+        <Button
             as={'a'}
             display={{ base: 'none', md: 'inline-flex' }}
             fontSize={'sm'}
@@ -90,7 +93,7 @@ export default function WithSubnavigation() {
             }}
           >
             Sign Up
-          </Button>
+          </Button></Link>
         </Stack>
       </Flex>
 
@@ -107,7 +110,7 @@ const DesktopNav = () => {
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
-    <Stack direction={'row'} spacing={4}>
+    <Stack  direction={'row'} spacing={4}>
       {NAV_ITEMS.map((navItem) => (
         <Box key={navItem.label}>
           {navItem.children ? (
