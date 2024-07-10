@@ -20,10 +20,11 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   FiHome,
   FiTrendingUp,
+  FiBook,
   FiCompass,
   FiStar,
   FiSettings,
@@ -31,19 +32,18 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 const LinkItems = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Trending', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
+  { name: 'Home', icon: FiHome, to: '/dashboard' },
+  { name: 'Budget', icon: FiBook , to: '/budget' },
+  { name: 'Explore', icon: FiCompass, to: '/explore' },
+  { name: 'Favourites', icon: FiStar, to: '/favourites' },
+  { name: 'Settings', icon: FiSettings, to: '/settings' },
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {
-
-
-
   return (
     <Box
       transition="3s ease"
@@ -56,13 +56,13 @@ const SidebarContent = ({ onClose, ...rest }) => {
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          MoneyWise
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
         <NavItem key={link.name} icon={link.icon}>
-          {link.name}
+          <Link to={link.to}>{link.name}</Link>
         </NavItem>
       ))}
     </Box>
@@ -73,7 +73,6 @@ const NavItem = ({ icon, children, ...rest }) => {
   return (
     <Box
       as="a"
-      href="#"
       style={{ textDecoration: 'none' }}
       _focus={{ boxShadow: 'none' }}>
       <Flex
@@ -105,8 +104,13 @@ const NavItem = ({ icon, children, ...rest }) => {
 }
 
 const MobileNav = ({ onOpen, ...rest }) => {
-  const name = JSON.parse(localStorage.getItem("user"));
-const [user, setUser] = useState(name);
+  const [user, setUser] = useState('')
+
+  useEffect(() => {
+    const name = JSON.parse(localStorage.getItem('user'))
+    setUser(name)
+  }, [])
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -131,11 +135,11 @@ const [user, setUser] = useState(name);
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold">
-        Logo
+        MoneyWise
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>
-        <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />} />
+        <IconButton size="lg" variant="ghost" aria-label="open notifications" icon={<FiBell />} />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
@@ -182,7 +186,7 @@ const SidebarWithHeader = () => {
 
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+      <SidebarContent onClose={onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -197,10 +201,23 @@ const SidebarWithHeader = () => {
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-        {/* Content */}
+     
       </Box>
     </Box>
   )
+}
+
+SidebarContent.propTypes = {
+  onClose: PropTypes.func.isRequired,
+}
+
+NavItem.propTypes = {
+  icon: PropTypes.elementType,
+  children: PropTypes.node,
+}
+
+MobileNav.propTypes = {
+  onOpen: PropTypes.func.isRequired,
 }
 
 export default SidebarWithHeader
