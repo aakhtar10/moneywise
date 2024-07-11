@@ -26,7 +26,6 @@ const AllRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/dashboard" element={<Dashboard />}/>
       </Routes>
     </div>
   );

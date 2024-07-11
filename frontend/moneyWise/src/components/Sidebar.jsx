@@ -19,6 +19,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Switch,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import {
@@ -32,8 +33,10 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import Dashboard from '../pages/Dashboard'
+import Budget from '../pages/Budget'
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
@@ -61,9 +64,11 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          <Link to={link.to}>{link.name}</Link>
+        <Link key={link.name} to={link.to}>
+        <NavItem  icon={link.icon}>
+          {link.name}
         </NavItem>
+        </Link>
       ))}
     </Box>
   )
@@ -182,6 +187,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
 }
 
 const SidebarWithHeader = () => {
+  const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -201,7 +207,11 @@ const SidebarWithHeader = () => {
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-     
+      <Routes>
+            <Route path="/dashboard" element={<Dashboard/>} />
+            <Route path="/budget" element={<Budget/>} />
+            {/* Add more routes as needed */}
+          </Routes>
       </Box>
     </Box>
   )
