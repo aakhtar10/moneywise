@@ -11,13 +11,23 @@ import {
   Switch,
   Text,
   useColorModeValue,
+  useToast
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import signInImage from "../assets/img/avatars/small-business-money-management.jpg";
 
+// Create an Axios instance with default headers
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8080",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 function SignIn() {
   const navigate = useNavigate();
+  const toast = useToast();
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.400", "white");
 
@@ -32,15 +42,30 @@ function SignIn() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:8080/user/login", {
+      const response = await axiosInstance.post("/user/login", {
         email,
         password,
       });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.fullname));
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`; // Set token in default headers
+      toast({
+        title: "Login successful",
+        description: "You have been logged in successfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password");
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
