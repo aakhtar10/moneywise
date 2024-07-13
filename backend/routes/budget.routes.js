@@ -6,7 +6,7 @@ const {auth} = require("../middleware/auth");
 
 BudgetRouter.get("/", auth, async (req, res) => {
     try {
-        const budgets = await BudgetModel.find({ user: req.user._id });
+        const budgets = await BudgetModel.find({ userID: req.body.userID });
         res.status(200).send(budgets);
     } catch (err) {
         res.status(500).send({ err: err.message });

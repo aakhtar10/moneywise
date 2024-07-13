@@ -1,5 +1,3 @@
-'use client'
-
 import {
   IconButton,
   Avatar,
@@ -19,9 +17,8 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  Switch,
-} from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
 import {
   FiHome,
   FiTrendingUp,
@@ -32,19 +29,19 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
-} from 'react-icons/fi'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import Dashboard from '../pages/Dashboard'
-import Budget from '../pages/Budget'
+} from 'react-icons/fi';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import Dashboard from '../pages/Dashboard';
+import Budget from '../pages/Budget';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
-  { name: 'Budget', icon: FiBook , to: '/budget' },
+  { name: 'Budget', icon: FiBook, to: '/budget' },
   { name: 'Explore', icon: FiCompass, to: '/explore' },
   { name: 'Favourites', icon: FiStar, to: '/favourites' },
   { name: 'Settings', icon: FiSettings, to: '/settings' },
-]
+];
 
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
@@ -65,14 +62,14 @@ const SidebarContent = ({ onClose, ...rest }) => {
       </Flex>
       {LinkItems.map((link) => (
         <Link key={link.name} to={link.to}>
-        <NavItem  icon={link.icon}>
-          {link.name}
-        </NavItem>
+          <NavItem icon={link.icon}>
+            {link.name}
+          </NavItem>
         </Link>
       ))}
     </Box>
-  )
-}
+  );
+};
 
 const NavItem = ({ icon, children, ...rest }) => {
   return (
@@ -105,16 +102,16 @@ const NavItem = ({ icon, children, ...rest }) => {
         {children}
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
 const MobileNav = ({ onOpen, ...rest }) => {
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState('');
 
   useEffect(() => {
-    const name = JSON.parse(localStorage.getItem('user'))
-    setUser(name)
-  }, [])
+    const name = localStorage.getItem('fullname');
+    setUser(name);
+  }, []);
 
   return (
     <Flex
@@ -183,12 +180,11 @@ const MobileNav = ({ onOpen, ...rest }) => {
         </Flex>
       </HStack>
     </Flex>
-  )
-}
+  );
+};
 
 const SidebarWithHeader = () => {
-  const location = useLocation();
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -204,30 +200,29 @@ const SidebarWithHeader = () => {
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-      <Routes>
-            <Route path="/dashboard" element={<Dashboard/>} />
-            <Route path="/budget" element={<Budget/>} />
-            {/* Add more routes as needed */}
-          </Routes>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/budget" element={<Budget />} />
+          {/* Add more routes as needed */}
+        </Routes>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 SidebarContent.propTypes = {
   onClose: PropTypes.func.isRequired,
-}
+};
 
 NavItem.propTypes = {
   icon: PropTypes.elementType,
   children: PropTypes.node,
-}
+};
 
 MobileNav.propTypes = {
   onOpen: PropTypes.func.isRequired,
-}
+};
 
-export default SidebarWithHeader
+export default SidebarWithHeader;

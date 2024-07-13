@@ -15,15 +15,33 @@ import {
     useDisclosure,
     useToast
   } from '@chakra-ui/react';
-  import React, { useState } from 'react';
-  import axios from 'axios';
+  import React, { useEffect, useState } from 'react';
+  import axiosInstance from '../JS/Axios';
   import { AddIcon } from '@chakra-ui/icons';
+import BudgetCard from '../components/BudgetCard';
   
   const Budget = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const btnRef = React.useRef();
     const [budget, setBudget] = useState({ category: '', amount: '', date: '' });
     const toast = useToast();
+    const [data, setData] = useState([]);
+
+
+  //Fetching the budget
+
+  useEffect(() => {
+      const fetchBudget = async () => {
+          try{
+            const response = await axiosInstance.get('http://localhost:8080/budget');
+            setData(response.data);
+          }catch(err){
+            console.log(err)
+          }
+          
+      }
+      fetchBudget();
+  },[budget])
   
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -45,7 +63,7 @@ import {
         return;
       }
       try {
-        const response = await axios.post('/budget/budget', budget);
+        const response = await axiosInstance.post('http://localhost:8080/budget/budget', budget);
         console.log('Budget submitted:', response.data);
         toast({
           title: 'Budget created successfully.',
@@ -128,6 +146,7 @@ import {
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
+        <BudgetCard  data={data}/>
       </>
     );
   };

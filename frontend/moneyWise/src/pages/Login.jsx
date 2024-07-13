@@ -35,38 +35,41 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (!email || !password) {
-      setError("Email and password are required");
-      return;
-    }
-    try {
-      const response = await axiosInstance.post("/user/login", {
-        email,
-        password,
+    
+    const payload = {
+      email,
+      password,
+    };
+
+    fetch(`http://localhost:8080/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+       
+        if (data.token) {
+          toast({
+            title: "Logged in successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("fullname", data.fullname);
+          navigate("/dashboard");
+        } else {
+          alert("Invalid email or password");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.fullname));
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`; // Set token in default headers
-      toast({
-        title: "Login successful",
-        description: "You have been logged in successfully.",
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-      });
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
-      toast({
-        title: "Login failed",
-        description: "Invalid email or password.",
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-    }
   };
 
   return (
