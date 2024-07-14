@@ -13,7 +13,8 @@ import {
     DrawerContent,
     DrawerCloseButton,
     useDisclosure,
-    useToast
+    useToast,
+    Flex
   } from '@chakra-ui/react';
   import React, { useEffect, useState } from 'react';
   import axiosInstance from '../JS/Axios';
@@ -87,22 +88,8 @@ import BudgetCard from '../components/BudgetCard';
     return (
       <>
         <Heading textAlign={'center'} mb={6}>Create your Budget</Heading>
-        <Button display={'block'} margin={'auto'} ref={btnRef} colorScheme='teal' onClick={onOpen}>
-          Create new<AddIcon ml={2} />
-        </Button>
-        <Drawer
-          isOpen={isOpen}
-          placement='top'
-          onClose={onClose}
-          finalFocusRef={btnRef}
-        >
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerHeader textAlign={'center'}>Create your Budget</DrawerHeader>
-  
-            <DrawerBody>
-              <Box maxWidth="500px" mx="auto">
+     <Flex justifyContent={'space-evenly'} mb={6} gap={4}>
+     <Box borderRadius={"lg"} boxShadow={"lg"} border={"2px dashed black"} p={4} w="500px" >
                 <form onSubmit={handleSubmit}>
                   <FormControl id="category" mb={4}>
                     <FormLabel>Category</FormLabel>
@@ -137,15 +124,44 @@ import BudgetCard from '../components/BudgetCard';
                   <Button type="submit" colorScheme="teal" width="full">Submit</Button>
                 </form>
               </Box>
-            </DrawerBody>
-  
-            <DrawerFooter>
-              <Button variant='outline' mr={3} onClick={onClose}>
-                Cancel
-              </Button>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+
+              <Box borderRadius={"lg"} boxShadow={"lg"} border={"2px dashed black"} p={4} w="500px" >
+                <form onSubmit={handleSubmit}>
+                  <FormControl id="category" mb={4}>
+                    <FormLabel>Category</FormLabel>
+                    <Input
+                      type="text"
+                      name="category"
+                      value={budget.category}
+                      onChange={handleChange}
+                      placeholder="Enter budget category"
+                    />
+                  </FormControl>
+                  <FormControl id="amount" mb={4}>
+                    <FormLabel>Amount</FormLabel>
+                    <Input
+                      type="number"
+                      name="amount"
+                      value={budget.amount}
+                      onChange={handleChange}
+                      placeholder="Enter amount"
+                    />
+                  </FormControl>
+                  <FormControl id="date" mb={4}>
+                    <FormLabel>Date</FormLabel>
+                    <Input
+                      type="date"
+                      min={new Date().toISOString().split("T")[0]}
+                      name="date"
+                      value={budget.date}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <Button type="submit" colorScheme="teal" width="full">Submit</Button>
+                </form>
+              </Box>
+     </Flex>
+       
         <BudgetCard  data={data}/>
       </>
     );
