@@ -6,11 +6,13 @@ const PORT = process.env.PORT||5000
 const app = express();
 const {UserRouter} = require("./routes/user.routes")
 const {BudgetRouter} = require("./routes/budget.routes")
+const { ExpenseRouter } = require("./routes/expense.routes")
 app.use(cors())
 app.use(express.json())
 
 app.use("/user",UserRouter);
 app.use("/budget",BudgetRouter);
+app.use("/", ExpenseRouter);
 
 app.listen(PORT, async()=>{
 try{

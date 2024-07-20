@@ -5,28 +5,22 @@ import {
     Input,
     Button,
     Box,
-    Drawer,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
     useDisclosure,
+    Text,
     useToast,
-    Flex
+    Flex,
+    Select
   } from '@chakra-ui/react';
   import React, { useEffect, useState } from 'react';
   import axiosInstance from '../JS/Axios';
-  import { AddIcon } from '@chakra-ui/icons';
 import BudgetCard from '../components/BudgetCard';
   
   const Budget = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const btnRef = React.useRef();
-    const [budget, setBudget] = useState({ category: '', amount: '', date: '' });
-    const toast = useToast();
+    const [budget, setBudget] = useState({ category: '', amount: ''});
+    const [expense,setExpense]= useState({amount:'',category:'',date:`${Date.now()}`})
+    const toast = useToast(); 
     const [data, setData] = useState([]);
+   const eachcategory = data.map((item) => item.category);
 
 
   //Fetching the budget
@@ -51,10 +45,17 @@ import BudgetCard from '../components/BudgetCard';
         [name]: value
       });
     };
+    const handleExpenseChange = (e) => {
+      const { name, value } = e.target;
+      setExpense({
+        ...expense,
+        [name]: value
+      });
+    };
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      if (!budget.category || !budget.amount || !budget.date) {
+      if (!budget.category || !budget.amount) {
         toast({
           title: 'All fields are required.',
           status: 'warning',
@@ -72,8 +73,7 @@ import BudgetCard from '../components/BudgetCard';
           duration: 2000,
           isClosable: true,
         });
-        setBudget({ category: '', amount: '', date: '' });
-        onClose();
+        setBudget({ category: '', amount: ''});
       } catch (error) {
         console.error('Error creating budget entry:', error);
         toast({
@@ -88,8 +88,8 @@ import BudgetCard from '../components/BudgetCard';
     return (
       <>
         <Heading textAlign={'center'} mb={6}>Create your Budget</Heading>
-     <Flex justifyContent={'space-evenly'} mb={6} gap={4}>
-     <Box borderRadius={"lg"} boxShadow={"lg"} border={"2px dashed black"} p={4} w="500px" >
+     <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}  gap={4}>
+     <Box  borderRadius={"lg"} boxShadow={"lg"} border={"2px dashed black"} p={4} w="500px" >
                 <form onSubmit={handleSubmit}>
                   <FormControl id="category" mb={4}>
                     <FormLabel>Category</FormLabel>
@@ -111,30 +111,23 @@ import BudgetCard from '../components/BudgetCard';
                       placeholder="Enter amount"
                     />
                   </FormControl>
-                  <FormControl id="date" mb={4}>
-                    <FormLabel>Date</FormLabel>
-                    <Input
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      name="date"
-                      value={budget.date}
-                      onChange={handleChange}
-                    />
-                  </FormControl>
+                  
+                  
                   <Button type="submit" colorScheme="teal" width="full">Submit</Button>
                 </form>
               </Box>
 
               <Box borderRadius={"lg"} boxShadow={"lg"} border={"2px dashed black"} p={4} w="500px" >
                 <form onSubmit={handleSubmit}>
+                  <Flex justifyContent={'space-evenly'}  gap={4}>
                   <FormControl id="category" mb={4}>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Expense Name</FormLabel>
                     <Input
                       type="text"
                       name="category"
                       value={budget.category}
                       onChange={handleChange}
-                      placeholder="Enter budget category"
+                      placeholder="Eg. Rent, Food, etc."
                     />
                   </FormControl>
                   <FormControl id="amount" mb={4}>
@@ -147,22 +140,27 @@ import BudgetCard from '../components/BudgetCard';
                       placeholder="Enter amount"
                     />
                   </FormControl>
-                  <FormControl id="date" mb={4}>
-                    <FormLabel>Date</FormLabel>
-                    <Input
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      name="date"
-                      value={budget.date}
-                      onChange={handleChange}
-                    />
-                  </FormControl>
-                  <Button type="submit" colorScheme="teal" width="full">Submit</Button>
+                  </Flex>
+                  {eachcategory.length > 0 ?(
+                 <FormControl   id="category" mb={4}>
+                  <FormLabel  >Budget Category</FormLabel>
+                 <Select placeholder='Select Category'>
+                  {eachcategory.map((item) => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+                 </Select>
+                 </FormControl>) : null
+  }
+                  <Button type="submit" colorScheme="teal" width="full">Add Expense </Button>
                 </form>
               </Box>
      </Flex>
-       
-        <BudgetCard  data={data}/>
+   
+ 
+  <Heading mt={6}>Existing Budgets</Heading>
+  {data.length === 0 ? <Text mt={6} textAlign={'center'} >No existing budgets</Text> :
+       <BudgetCard  data={data}/>
+  }
       </>
     );
   };
